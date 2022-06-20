@@ -26,15 +26,13 @@ This is available on MSVC, Clang / Not tested on GCC yet
 Intended usage: extend this class to generate some code automatically at compile time
 ```C++
 // F version:
-template<class FT>
 constexpr void dosth2(){
     std::cout<<first;
 }
     
 // F, T... version:
-template<class FT>
 constexpr void dosth2(){
-    dosth2<FT::firstType>();    // something overloaded or template
-    dosth2<FT::lastType>();
+    firstType::dosth2();    // something overloaded or template
+    lastType::dosth2();
 }
 ```
