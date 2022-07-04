@@ -21,7 +21,7 @@ struct{
     int _1;
 };
 ```
-This is available on MSVC, Clang / Not tested on GCC yet
+This is available(tested) on MSVC, Clang, and GCC
 
 Intended usage: extend this class to generate some code automatically at compile time
 ```C++
