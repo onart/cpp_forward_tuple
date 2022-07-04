@@ -19,7 +19,7 @@ struct{
     int _1;
 };
 
-This is available on MSVC, Clang / Not tested on GCC yet
+This is available on MSVC, Clang, and GCC
 */
 
 #include <type_traits>
@@ -61,7 +61,7 @@ namespace onart{
     };
     
     template<class F, class... T>
-    struct ftuple<F, T...>{
+    struct ftuple<F, T...>: ftuple<F>, ftuple<T...>{
     protected:
         using Type = F;
         using firstType = ftuple<F>;
