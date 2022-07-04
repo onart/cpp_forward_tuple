@@ -1,6 +1,6 @@
 # cpp_forward_tuple
-Reverse version of std::tuple, which is already reversed
-ftuple is a class like std::tuple, but its order in memory is forward\
+Reverse version of std::tuple, which is already reversed\
+ftuple is a class like std::tuple, but its order in memory is forward
 
 example:\
 type `ftuple<int, float, double, char>` is like:
