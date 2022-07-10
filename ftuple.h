@@ -123,15 +123,13 @@ namespace onart{
     
     non static function extension may be like this:
     // F version:
-    template<class FT>
-    constexpr void dosth2(){
-        external_func(first);
-    }
+	constexpr void dosth2(){
+	    std::cout<<first;
+	}
     
-    // F, T... version:
-    template<class FT>
-    constexpr void dosth2(){
-        external_func(FT::firstType::first);    // something overloaded or template
-        dosth2<FT::lastType>();
-    }
+	// F, T... version:
+	constexpr void dosth2(){
+   	 firstType::dosth2();    // something overloaded or template
+  	  lastType::dosth2();
+	}
 */
