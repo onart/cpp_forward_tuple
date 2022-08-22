@@ -54,7 +54,7 @@ namespace onart{
         }
         ftuple() = default;
 	    ftuple(const ftuple&) = default;
-	    fuple& operator=(const ftuple&) = default;
+	    ftuple& operator=(const ftuple&) = default;
     protected:
         using Type = F;
         using firstType = ftuple<F>;
@@ -93,7 +93,7 @@ namespace onart{
         }
         ftuple() = default;
 	    ftuple(const ftuple&) = default;
-	    fuple& operator=(const ftuple&) = default;
+	    ftuple& operator=(const ftuple&) = default;
     };
 }
 
