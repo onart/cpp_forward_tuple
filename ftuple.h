@@ -53,8 +53,9 @@ namespace onart{
             return 0;
         }
         ftuple() = default;
-	    ftuple(const ftuple&) = default;
-	    ftuple& operator=(const ftuple&) = default;
+	ftuple(const ftuple&) = default;
+	ftuple(const F& f): first(f){}
+	ftuple& operator=(const ftuple&) = default;
     protected:
         using Type = F;
         using firstType = ftuple<F>;
@@ -92,8 +93,9 @@ namespace onart{
             return offset<POS, ftuple<F, T...>>();
         }
         ftuple() = default;
-	    ftuple(const ftuple&) = default;
-	    ftuple& operator=(const ftuple&) = default;
+	ftuple(const ftuple&) = default;
+	ftuple(const F& f, const T&... t): firstType{f}, lastType(t...){}
+	ftuple& operator=(const ftuple&) = default;
     };
 }
 
