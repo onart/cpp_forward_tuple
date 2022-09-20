@@ -23,6 +23,7 @@ This is available on MSVC, Clang, and GCC
 */
 
 #include <type_traits>
+#include <cstddef>
 
 namespace onart{
     
@@ -36,6 +37,18 @@ namespace onart{
     
     template<class... T>
     struct ftuple;
+    
+    template<class F, size_t i=0>
+    struct ftupleBase{
+    	public:
+    		F first;
+    		ftupleBase()=default;
+    		ftupleBase(const ftupleBase&)=default;
+    		ftupleBase& operator=(const ftupleBase&)=default;
+    	protected:
+    		using Type=F;
+    		using firstType = ftupleBase<F, i>;
+    };
     
     template<class F>
     struct ftuple<F>{
@@ -62,10 +75,10 @@ namespace onart{
     };
     
     template<class F, class... T>
-    struct ftuple<F, T...>: ftuple<F>, ftuple<T...>{
+    struct ftuple<F, T...>: ftupleBase<F, sizeof...(T)>, ftuple<T...>{
     protected:
         using Type = F;
-        using firstType = ftuple<F>;
+        using firstType = ftupleBase<F,sizeof...(T)>;
         using lastType = ftuple<T...>;
     private:
         template<unsigned POS, class FT>
