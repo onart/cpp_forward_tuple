@@ -22,25 +22,30 @@ struct{
 This is available on MSVC, Clang, and GCC
 */
 
+#ifndef __FTUPLE_H__
+#define __FTUPLE_H__
+
 #include <type_traits>
 #include <cstddef>
 #include <vector>
 
-namespace onart {
+#define POSSIBLE_COMPONENT(t) virtual t * get_##t() { return nullptr; } virtual std::vector<t *> gets_##t() { return {}; }
+#define TEMPLATE_VIRTUAL(t) t * get_##t() { return get<t>(); } std::vector<t *> gets_##t() { return gets<t>(); }
 
+namespace onart {
     // something useful with the class below
     template <class, class...>
     inline constexpr bool is_one_of = false;
 
     template <class A, class B, class... T>
     inline constexpr bool is_one_of<A, B, T...> = std::is_same_v<A, B> || is_one_of<A, T...>;
-    // something useful with the class below
 
     template <class, class...>
     inline constexpr size_t count_of = 0;
 
     template <class A, class B, class... T>
-    inline constexpr size_t count_of <A, B, T...> = (int)std::is_same_v<A, B> + count_of<A, T...>;
+    inline constexpr size_t count_of <A, B, T...> = (int)std::is_same_v<A, B> +count_of<A, T...>;
+    // something useful with the class below
 
     template<class... T>
     struct ftuple;
@@ -162,6 +167,8 @@ namespace onart {
     };
 }
 
+#endif // !__FTUPLE_H__
+
 /*
     Intended usage:
     extend this class to generate something automatically at compile time
@@ -197,4 +204,39 @@ namespace onart {
    	 firstType::dosth2();    // something overloaded or template
   	  lastType::dosth2();
 	}
+
+    Polymorphism by component example:
+    
+    class Entity {
+public:
+    POSSIBLE_COMPONENT(int)
+    POSSIBLE_COMPONENT(float)
+};
+
+template <class... T>
+class EntityComponent : public Entity {
+public:
+    TEMPLATE_VIRTUAL(int)
+    TEMPLATE_VIRTUAL(float)
+    inline EntityComponent(const T&... t) :components(t...) {}
+    template <class T>
+    inline T* get() { return components.get<T>(); }
+    template <class T>
+    inline std::vector<T*> gets() { return components.gets<T>(); }
+private:
+    onart::ftuple<T...> components;
+};
+
+int main() {
+    EntityComponent<int, float, float, int> body(1, 2.0f, 3.0f, 4);
+    EntityComponent<float, int, int, int> body2(6.0f, 1, 3, 4);
+    Entity* center = &body;
+    for (float* f : center->gets_float()) {
+        printf("%f\n",*f);
+    }
+    center = &body2;
+    for (int* i : center->gets_int()) {
+        printf("%d\n",*i);
+    }
+}
 */
