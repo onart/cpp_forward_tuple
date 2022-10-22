@@ -22,7 +22,7 @@ struct{
     int _1;
 };
 ```
-(Actually the offsets are different from the pure `struct`; the struct is 24 bytes long / std::tuple and ftuple are 32 bytes long for this example in MSVC)\
+(Actually the offsets are different from the pure `struct`; the struct is 24 bytes long / std::tuple and ftuple are 32 bytes long for this example in MSVC)
 
 This is available(tested) on MSVC, Clang, and GCC
 
@@ -45,6 +45,8 @@ constexpr void dosth2(){
 * `get<T>(void)`: the pointer to the first member among the type T components. If there is no T component, it returns `nullptr`
 * `gets<T>(void)`: std::vector<T*> containing all of type T component. Of course the life span of this vector is equal to the tuple.
 * `offset<N>(void)`: this is a static function; the offset of the Nth component. this works like the `offsetof` macro. (N: 0-base)
+
+** `get<T>`, `gets<T>` are intended to be used with polymorphism
 ```C++
 onart::ftuple<int, float, double, char> obj(1, 2.0f, 3.0, '4'); // {1, 2.0f, 3.0, '4'} also possible
 obj.get<3>(); // '4'. also possible: obj.get<3>() = 'a';
