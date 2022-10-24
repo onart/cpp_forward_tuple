@@ -58,7 +58,7 @@ sizeof(obj) // 32
 ```
 
 ### Polymorphism
-We can't make a virtual template member function in C++, so alternatively we can use a macro defining the default operation for getting some type. (No need to use get<N> virtually, of course. There's no usage for this in dynamic polymorphism context!)\
+We can't make a virtual template member function in C++, so alternatively we can use a macro defining the default operation for getting some type. (No need to use `get<N>` in virtual function, of course. There's no usage for this in dynamic polymorphism context!)
 
 * Example code
 
