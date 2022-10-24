@@ -100,4 +100,4 @@ int main() {
 ```
 
 We can implement the similar operation with STL vector and dynamic polymorphism like: `std::vector<Component*> components`. This provides more flexibility since we can add or remove components in runtime. But this one is a little bit harder to achieve spatial locality than `ftuple`, and traversal like `dosth2` or getting the component should use RTTI for each components.\
-`ftuple` provides liberal condition for component types thanks to SFINAE. Branch prediction in vtable is likely to be harder in `ftuple`, but it uses lesser RTTI, so it depends.
+`ftuple` provides liberal condition for component types thanks to SFINAE. Branch prediction in vtable is likely to be harder in `ftuple`, but RTTI's used less, so it depends.
