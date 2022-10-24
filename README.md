@@ -56,3 +56,48 @@ obj.gets<int>(); // {===> 1}
 obj.offset<3>(); // 24
 sizeof(obj) // 32
 ```
+
+### Polymorphism
+We can't make a virtual template member function in C++, so alternatively we can use a macro defining the default operation for getting some type. (No need to use get<N> virtually, of course. There's no usage for this in dynamic polymorphism context!)\
+
+* Example code
+
+```C++
+class Entity {
+public:
+    POSSIBLE_COMPONENT(int) // Extended to virtual int * get_int() { return nullptr; } virtual std::vector<int*> gets_int() { return {}; }
+    POSSIBLE_COMPONENT(float)
+    virtual void dosth2() {}
+};
+
+template <class... T>
+class EntityComponent : public Entity {
+public:
+    TEMPLATE_VIRTUAL(int) // Extended to int * get_int() { return get<int>(); } std::vector<int*> gets_int() { return gets<int>(); }
+    TEMPLATE_VIRTUAL(float)
+    inline EntityComponent(const T&... t) :components(t...) {}
+    template <class T>
+    inline T* get() { return components.get<T>(); }
+    template <class T>
+    inline std::vector<T*> gets() { return components.gets<T>(); }
+    void dosth2(){ components.dosth2(); }
+private:
+    onart::ftuple<T...> components;
+};
+
+int main() {
+    EntityComponent<int, float, float, int> body(1, 2.0f, 3.0f, 4);
+    EntityComponent<float, int, int, int> body2(6.0f, 1, 3, 4);
+    Entity* center = &body;
+    for (float* f : center->gets_float()) {
+        printf("%f\n",*f);
+    }
+    center = &body2;
+    for (int* i : center->gets_int()) {
+        printf("%d\n",*i);
+    }
+}
+```
+
+We can implement the similar operation with STL vector and dynamic polymorphism like: `std::vector<Component*> components`. This provides more flexibility since we can add or remove components in runtime. But this one is a little bit harder to achieve spatial locality than `ftuple`, and traversal like `dosth2` or getting the component should use RTTI for each components.\
+`ftuple` provides liberal condition for component types thanks to SFINAE. Branch prediction in vtable is likely to be harder in `ftuple`, but it uses lesser RTTI, so it depends.
