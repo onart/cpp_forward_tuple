@@ -90,7 +90,26 @@ namespace onart
 
     template<size_t pack, class F, class... T>
     struct alignas(pack) packedstruct<pack, F, T...> {
+    private:
+        template<size_t idx = 0>
+        inline static void init(packedstruct& obj, const F& f, const T&... t) {
+            new (&obj.get<idx>()) F(f);
+            if constexpr (idx < sizeof...(T)) {
+                init<idx + 1>(obj, f, t...);
+            }
+        }
+        
+        template<size_t idx = 0>
+        inline static void destruct(packedstruct& obj) {
+            using type = decltype(obj.getcopy<idx>());
+            obj.get<idx>().~type();
+        }
     public:
+        inline packedstruct() = default;
+        inline packedstruct(const F& f, const T&... t) { init(*this, f, t...); }
+
+        inline ~packedstruct() { destruct(*this); }
+
         template<size_t idx>
         auto& get() {
             static_assert(idx <= sizeof...(T));
@@ -105,6 +124,14 @@ namespace onart
             using typ = variadicType<idx, F, T...>;
             constexpr size_t off = packedOffset<pack, idx, F, T...>;
             return reinterpret_cast<const typ&>(attrs[off]);
+        }
+
+        template<size_t idx>
+        auto getcopy() {
+            static_assert(idx <= sizeof...(T));
+            using typ = variadicType<idx, F, T...>;
+            constexpr size_t off = packedOffset<pack, idx, F, T...>;
+            return *reinterpret_cast<typ*>(&attrs[off]);
         }
     private:
         uint8_t attrs[packedSize<pack, F, T...>];
